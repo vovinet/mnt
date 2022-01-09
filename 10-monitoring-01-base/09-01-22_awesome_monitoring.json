@@ -1,0 +1,5 @@
+{"timestamp": 1641755778, "load_average": "0.02 0.01 0.00", "mem_total": "6398384 kb", "mem_free": "5432232 kb", "disk_name": "/dev/sdb", "disk_space_used": "1%", "disk_inodes_used": "2%"}
+{"timestamp": 1641756061, "load_average": "0.00 0.00 0.00", "mem_total": "6398384 kb", "mem_free": "5469508 kb", "disk_name": "/dev/sdb", "disk_space_used": "1%", "disk_inodes_used": "2%"}
+{"timestamp": 1641756121, "load_average": "0.05 0.01 0.00", "mem_total": "6398384 kb", "mem_free": "5469272 kb", "disk_name": "/dev/sdb", "disk_space_used": "1%", "disk_inodes_used": "2%"}
+{"timestamp": 1641756181, "load_average": "0.02 0.01 0.00", "mem_total": "6398384 kb", "mem_free": "5469576 kb", "disk_name": "/dev/sdb", "disk_space_used": "1%", "disk_inodes_used": "2%"}
+{"timestamp": 1641756241, "load_average": "0.00 0.00 0.00", "mem_total": "6398384 kb", "mem_free": "5469028 kb", "disk_name": "/dev/sdb", "disk_space_used": "1%", "disk_inodes_used": "2%"}
