@@ -1,0 +1,31 @@
+{
+    "template_files": {},
+    "alertmanager_config": {
+      "route": {
+        "receiver": "tg"
+      },
+      "templates": null,
+      "receivers": [
+        {
+          "name": "grafana-default-email"
+        },
+        {
+          "name": "tg",
+          "grafana_managed_receiver_configs": [
+            {
+              "uid": "6VAV-bJ7k",
+              "name": "tg",
+              "type": "telegram",
+              "disableResolveMessage": false,
+              "settings": {
+                "chatid": "-1001791753029"
+              },
+              "secureFields": {
+                "bottoken": true
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }

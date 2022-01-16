@@ -1,0 +1,13 @@
+---
+- name: install monitoring stack
+  hosts: monitor
+  become: yes
+  roles:
+  - prometheus
+  - grafana
+
+- name: install node-exporter
+  hosts: all
+  become: yes
+  roles:
+  - node-exporter
