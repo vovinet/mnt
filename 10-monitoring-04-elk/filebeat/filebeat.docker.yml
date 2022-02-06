@@ -1,0 +1,70 @@
+# filebeat.autodiscover:
+#   providers:
+#     - type: docker
+#       hints.enabled: true
+#       json.message_key: log  
+#       templates:
+#         - condition:
+#             equals:
+#               docker.container.labels.filebeat_enable: "true"
+#           config:
+#             - type: docker
+#               containers.ids:
+#                 - "${data.docker.container.id}"
+#               json.keys_under_root: true
+#               json.add_error_key: false
+# # processors:
+# # - add_cloud_metadata: ~
+# # - add_docker_metadata: ~ 
+
+# # output.file:
+# #   path: "/filebeat"
+# #   filename: "filebeat.log"
+# #   rotate_every_kb: 10000
+# #   number_of_files: 7
+# #   permissions: 0600
+
+# filebeat.config:
+#   modules:
+#     path: ${path.config}/modules.d/*.yml
+#     reload.enabled: false
+
+# # filebeat.inputs:
+# # - type: docker
+# #   paths: 
+# #     - '/var/lib/docker/containers/*/*.log'
+
+# processors:
+# - add_docker_metadata:
+#     host: "unix:///var/run/docker.sock"
+
+# output.logstash:
+#   hosts: ["elk-logstash:5000"]
+
+# logging.json: true
+# logging.metrics.enabled: false
+
+filebeat.inputs:
+- type: container
+  paths: 
+    - '/var/lib/docker/containers/*/*.log'
+
+processors:
+- add_docker_metadata:
+    host: "unix:///var/run/docker.sock"
+
+- decode_json_fields:
+    fields: ["message"]
+    target: "json"
+    overwrite_keys: true
+
+# output.elasticsearch:
+#   hosts: ["elk-es01:9200"]
+#   indices:
+#     - index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+
+output.logstash:
+  hosts: ["elk-logstash:5000"]
+
+logging.json: true
+logging.metrics.enabled: false

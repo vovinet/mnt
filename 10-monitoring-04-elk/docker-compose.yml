@@ -1,0 +1,91 @@
+version: "3.6"
+services:
+
+  elk-es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    container_name: elk-es01
+    restart: unless-stopped
+    volumes:
+      - ./elasticsearch/es-hot.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./elasticsearch/data-hot:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk_net
+
+  elk-es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    container_name: elk-es02
+    restart: unless-stopped
+    volumes:
+      - ./elasticsearch/es-warm.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./elasticsearch/data-warm:/usr/share/elasticsearch/data
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk_net
+
+  elk-logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.0
+    container_name: elk-logstash
+    restart: unless-stopped
+    volumes:
+      - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - "5000:5000"
+      - "5044:5044"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
+    depends_on:
+      - elk-es01
+      - elk-es02
+    networks:
+      - elk_net
+ 
+  elk-kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.0
+    container_name: elk-kibana
+    restart: unless-stopped
+    volumes:
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - "5601:5601"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elk-es01
+    networks:
+      - elk_net
+
+  elk-filebeat:
+    image: docker.elastic.co/beats/filebeat:7.17.0
+    user: root
+    container_name: elk-filebeat
+    restart: unless-stopped
+    volumes:
+      - ./filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command:
+      - -strict.perms=false
+    depends_on:
+      - elk-logstash
+    networks:
+      - elk_net
+
+  some_application:
+    image: library/python:3.9-alpine
+    container_name: some_app
+    volumes:
+      - ./pinger/run.py:/opt/run.py:Z
+    entrypoint: python3 /opt/run.py
+    networks:
+      - elk_net
+
+networks:
+ elk_net:
+   driver: bridge

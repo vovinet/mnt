@@ -1,0 +1,11 @@
+---
+cluster.name: "docker-cluster"
+node.name: "elk-es02"
+network.host: 0.0.0.0
+
+node.attr.box_type: warm
+discovery.seed_hosts : "elk-es01"
+cluster.initial_master_nodes : [ "elk-es01", "elk-es02" ]
+ 
+xpack.license.self_generated.type: basic
+xpack.monitoring.collection.enabled: true
